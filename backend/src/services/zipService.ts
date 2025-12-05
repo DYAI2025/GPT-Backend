@@ -26,30 +26,29 @@ async function downloadFile(url: string): Promise<Buffer> {
 }
 
 // Create ZIP bundle from files
-export async function createZipBundle(
-    request: ZipBundleRequest
-): Promise<ZipBundleResponse> {
+// Create ZIP bundle and pipe to writable stream (e.g. Response)
+export async function createZipStream(
+    request: ZipBundleRequest,
+    outputStream: any
+): Promise<void> {
     // Validate request
-    if (!request.projectName) {
-        throw new ValidationError('projectName is required');
-    }
     if (!request.files || !Array.isArray(request.files) || request.files.length === 0) {
         throw new ValidationError('files array is required and must not be empty');
     }
 
-    logger.info('Creating ZIP bundle', {
+    logger.info('Creating ZIP stream', {
         projectName: request.projectName,
         fileCount: request.files.length,
     });
 
-    // Create archive
     const archive = archiver('zip', { zlib: { level: 9 } });
-    const chunks: Buffer[] = [];
 
-    archive.on('data', (chunk) => chunks.push(chunk));
     archive.on('error', (err) => {
         throw err;
     });
+
+    // Pipe to output
+    archive.pipe(outputStream);
 
     // Process each file
     for (const file of request.files) {
@@ -59,22 +58,9 @@ export async function createZipBundle(
     // Finalize archive
     await archive.finalize();
 
-    // Wait for all data
-    const zipBuffer = Buffer.concat(chunks);
-
-    // Upload to storage
-    const { publicUrl } = await storage.uploadZip(zipBuffer, request.projectName);
-
-    logger.info('ZIP bundle created', {
-        projectName: request.projectName,
-        fileCount: request.files.length,
-        size: zipBuffer.length,
+    logger.info('ZIP stream finalized', {
+        projectName: request.projectName
     });
-
-    return {
-        downloadUrl: publicUrl,
-        fileCount: request.files.length,
-    };
 }
 
 // Add single file to archive

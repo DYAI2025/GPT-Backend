@@ -1,184 +1,113 @@
 openapi: 3.1.0
 info:
   title: GPT Backend Services API
-  description: |
-    Backend-Service für Custom GPT Actions.
-    Ermöglicht das Erstellen von Pinterest Pins und anderen Templates.
+  description: API für Pinterest Templates, ZIP-Bundles und Langzeitgedächtnis.
   version: 1.0.0
-  contact:
-    name: DYAI2025
-    email: privacy@dyai2025.com
-
 servers:
   - url: https://backend-dyai2025s-projects.vercel.app
-    description: Production Server
-
 paths:
   /health:
     get:
       operationId: checkHealth
       summary: Health Check
-      description: Überprüft ob der Backend-Service erreichbar ist
-      responses:
-        '200':
-          description: Service ist gesund
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: "ok"
-                  timestamp:
-                    type: string
-                    format: date-time
-
   /templates:
     get:
       operationId: listTemplates
-      summary: Alle Templates auflisten
-      description: Gibt eine Liste aller verfügbaren Templates zurück (Pinterest Pins, etc.)
-      responses:
-        '200':
-          description: Liste der Templates
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    id:
-                      type: string
-                      description: Template ID zum Rendern
-                    name:
-                      type: string
-                      description: Anzeigename
-                    type:
-                      type: string
-                      description: Kategorie (z.B. pinterest)
-                    description:
-                      type: string
-                    fields:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          name:
-                            type: string
-                          type:
-                            type: string
-                          required:
-                            type: boolean
-
+      summary: Verfügbare Templates auflisten
   /templates/render:
     post:
       operationId: renderTemplate
-      summary: Template rendern
-      description: |
-        Rendert ein Template mit den angegebenen Daten zu HTML.
-        Der HTML-Code kann direkt verwendet werden um das Design anzuzeigen.
-        
-        Verfügbare Templates:
-        - pinterest-quote: Zitat-Pin (1000x1500px)
-        - pinterest-tips: Tipps-Pin (1000x1500px)  
-        - pinterest-story: Story Pin (1080x1920px)
+      summary: Template rendern (HTML/Visual)
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
-              required:
-                - templateId
-                - data
+              required: [templateId, data]
               properties:
                 templateId:
                   type: string
-                  description: ID des Templates
-                  enum:
-                    - pinterest-quote
-                    - pinterest-tips
-                    - pinterest-story
+                  description: ID wie 'pinterest-quote', 'pinterest-story', 'pinterest-tips'
                 data:
                   type: object
-                  description: Template-spezifische Daten
-                  properties:
-                    quote:
-                      type: string
-                      description: Zitat-Text (für pinterest-quote)
-                    author:
-                      type: string
-                      description: Autor des Zitats
-                    title:
-                      type: string
-                      description: Hauptüberschrift (für pinterest-tips, pinterest-story)
-                    subtitle:
-                      type: string
-                      description: Untertitel
-                    tips:
-                      type: array
-                      items:
+                  description: Json mit Inhalten (title, quote, colors, etc.)
+  /zip-bundles:
+    post:
+      operationId: createZipBundle
+      summary: ZIP Datei erstellen
+      description: Erstellt ein ZIP-Archiv aus Textinhalten und gibt es als Download zurück.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [files]
+              properties:
+                filename:
+                  type: string
+                  description: Name der Download-Datei (z.B. "social-media-pack.zip")
+                files:
+                  type: array
+                  items:
+                    type: object
+                    required: [name, content]
+                    properties:
+                      name:
                         type: string
-                      description: Liste von Tipps (für pinterest-tips)
-                    month:
-                      type: string
-                      description: Monat (für pinterest-story)
-                    year:
-                      type: string
-                      description: Jahr (für pinterest-story)
-                    brandName:
-                      type: string
-                      description: Markenname für Branding
-            examples:
-              pinterest_quote:
-                summary: Pinterest Quote erstellen
-                value:
-                  templateId: "pinterest-quote"
-                  data:
-                    quote: "Die Zukunft gehört denen, die an ihre Träume glauben."
-                    author: "Eleanor Roosevelt"
-              pinterest_story:
-                summary: Pinterest Story erstellen
-                value:
-                  templateId: "pinterest-story"
-                  data:
-                    title: "Dezember Highlights"
-                    subtitle: "Die schönsten Momente"
-                    month: "Dezember"
-                    year: "2024"
+                        description: Dateiname im ZIP (z.B. "pin1.html")
+                      content:
+                        type: string
+                        description: Textinhalt der Datei (HTML code, CSV, Text)
       responses:
         '200':
-          description: Template erfolgreich gerendert
+          description: ZIP Datei Download (Binary)
           content:
-            application/json:
+            application/zip:
               schema:
-                type: object
-                properties:
-                  html:
-                    type: string
-                    description: Der gerenderte HTML-Code des Templates
-                  output:
-                    type: string
-                    example: "html"
-                  message:
-                    type: string
-        '400':
-          description: Ungültige Anfrage
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-        '404':
-          description: Template nicht gefunden
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
+                type: string
+                format: binary
+  /memory/query:
+    post:
+      operationId: queryMemory
+      summary: Erinnerungen abrufen
+      description: Suche nach gespeicherten Marken-Infos oder vergangenen Posts.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [userId]
+              properties:
+                userId:
+                  type: string
+                  description: Die OpenAI User ID (vom System bereitgestellt)
+                search:
+                  type: string
+                  description: Suchbegriff (z.B. "Brand Guidelines", "Last Post")
+                memoryKey:
+                  type: string
+                  description: Exakter Key falls bekannt (z.B. "brand_colors")
+  /memory/upsert:
+    post:
+      operationId: upsertMemory
+      summary: Wissen speichern
+      description: Speichere Marken-Farben, Stile oder Post-Historie dauerhaft.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [userId, memoryKey, content]
+              properties:
+                userId:
+                  type: string
+                memoryKey:
+                  type: string
+                  description: Eindeutiger Name (z.B. "brand_colors")
+                content:
+                  type: object
+                  description: Die Daten als JSON Objekt

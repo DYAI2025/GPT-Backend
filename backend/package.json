@@ -2,6 +2,7 @@
     "name": "gpt-modular-backend",
     "version": "1.0.0",
     "description": "Modular GPT Backend Service - ZIP, Templates, Memory",
+    "type": "module",
     "main": "dist/index.js",
     "scripts": {
         "dev": "tsx watch src/index.ts",
