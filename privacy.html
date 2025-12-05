@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Datenschutzrichtlinie - GPT Backend Services</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            min-height: 100vh;
+            color: #fff;
+            line-height: 1.8;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 24px;
+        }
+
+        h2 {
+            color: #667eea;
+            font-size: 1.3rem;
+            margin-bottom: 16px;
+        }
+
+        p,
+        li {
+            color: rgba(255, 255, 255, 0.85);
+            margin-bottom: 12px;
+        }
+
+        ul {
+            padding-left: 24px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        a {
+            color: #667eea;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            color: rgba(255, 255, 255, 0.4);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Datenschutzrichtlinie</h1>
+        <p class="subtitle">GPT Backend Services - Privacy Policy</p>
+
+        <div class="card">
+            <h2>1. Verantwortlicher</h2>
+            <p>Diese Datenschutzrichtlinie gilt für den GPT Backend Service, bereitgestellt von DYAI2025.</p>
+            <p>Kontakt: <a href="mailto:privacy@dyai2025.com">privacy@dyai2025.com</a></p>
+        </div>
+
+        <div class="card">
+            <h2>2. Welche Daten werden verarbeitet?</h2>
+            <p>Der Service verarbeitet folgende Daten:</p>
+            <ul>
+                <li><strong>API-Anfragen:</strong> Inhalte, die über die API gesendet werden (Texte, Dateinamen,
+                    Template-Daten)</li>
+                <li><strong>Memory-Daten:</strong> Benutzer-ID und zugehörige Schlüssel-Wert-Paare (nur wenn der
+                    Memory-Service genutzt wird)</li>
+                <li><strong>Generierte Dateien:</strong> ZIP-Archive und gerenderte Templates werden temporär
+                    gespeichert</li>
+                <li><strong>Technische Daten:</strong> IP-Adressen, Zeitstempel, User-Agent (für Logging und Sicherheit)
+                </li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2>3. Zweck der Datenverarbeitung</h2>
+            <ul>
+                <li>Bereitstellung der API-Dienste (ZIP-Erstellung, Template-Rendering, Memory-Speicherung)</li>
+                <li>Technische Wartung und Fehlerbehebung</li>
+                <li>Sicherheit und Missbrauchsprävention</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2>4. Datenspeicherung</h2>
+            <ul>
+                <li><strong>Memory-Daten:</strong> Werden in Supabase (PostgreSQL) gespeichert und bleiben erhalten, bis
+                    sie gelöscht werden</li>
+                <li><strong>Generierte Dateien:</strong> Werden in Supabase Storage gespeichert und nach 30 Tagen
+                    automatisch gelöscht</li>
+                <li><strong>Logs:</strong> Werden maximal 7 Tage aufbewahrt</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2>5. Datenweitergabe</h2>
+            <p>Daten werden nicht an Dritte verkauft. Folgende Dienste werden genutzt:</p>
+            <ul>
+                <li><strong>Supabase:</strong> Datenbank und Dateispeicherung (Server in EU/USA)</li>
+                <li><strong>Vercel:</strong> Hosting der API (Server global verteilt)</li>
+                <li><strong>OpenAI:</strong> Integration als GPT Custom Action (Anfragen werden von OpenAI
+                    weitergeleitet)</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2>6. Ihre Rechte (DSGVO)</h2>
+            <ul>
+                <li><strong>Auskunft:</strong> Sie können Auskunft über Ihre gespeicherten Daten verlangen</li>
+                <li><strong>Löschung:</strong> Sie können die Löschung Ihrer Daten verlangen</li>
+                <li><strong>Berichtigung:</strong> Sie können fehlerhafte Daten korrigieren lassen</li>
+                <li><strong>Widerspruch:</strong> Sie können der Datenverarbeitung widersprechen</li>
+            </ul>
+            <p>Kontaktieren Sie uns unter <a href="mailto:privacy@dyai2025.com">privacy@dyai2025.com</a></p>
+        </div>
+
+        <div class="card">
+            <h2>7. OpenAI GPT Integration</h2>
+            <p>Dieser Service ist als Custom Action für OpenAI GPTs konzipiert. Bei Nutzung über einen GPT:</p>
+            <ul>
+                <li>OpenAI leitet Ihre Anfragen an unsere API weiter</li>
+                <li>Wir speichern keine Konversationsverläufe</li>
+                <li>Die <a href="https://openai.com/policies/privacy-policy" target="_blank">OpenAI
+                        Datenschutzrichtlinie</a> gilt zusätzlich</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2>8. Sicherheit</h2>
+            <ul>
+                <li>Alle Verbindungen sind HTTPS-verschlüsselt</li>
+                <li>API-Schlüssel werden serverseitig verwaltet</li>
+                <li>Regelmäßige Sicherheitsupdates</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2>9. Änderungen</h2>
+            <p>Diese Richtlinie kann aktualisiert werden. Die aktuelle Version ist immer unter dieser URL verfügbar.</p>
+            <p><strong>Letzte Aktualisierung:</strong> 5. Dezember 2024</p>
+        </div>
+
+        <div class="footer">
+            <p>&copy; 2024 DYAI2025 - GPT Backend Services</p>
+            <p><a href="index.html">← Zurück zum Dashboard</a></p>
+        </div>
+    </div>
+</body>
+
+</html>
