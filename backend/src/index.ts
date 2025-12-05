@@ -59,6 +59,8 @@ app.get('/', (_req: Request, res: Response) => {
             memoryQuery: 'POST /memory/query',
         },
         documentation: '/docs',
+        privacy: 'https://dyai2025.github.io/GPT-Backend/privacy.html',
+        terms: 'https://dyai2025.github.io/GPT-Backend/terms.html',
     });
 });
 
@@ -66,17 +68,20 @@ app.get('/', (_req: Request, res: Response) => {
 app.use(notFoundHandler);
 app.use(errorHandler);
 
-// Start server
-app.listen(PORT, () => {
-    logger.info(`🚀 Server running on http://localhost:${PORT}`);
-    logger.info('Available endpoints:', {
-        health: `GET http://localhost:${PORT}/health`,
-        zipBundles: `POST http://localhost:${PORT}/zip-bundles`,
-        templates: `GET http://localhost:${PORT}/templates`,
-        templateRender: `POST http://localhost:${PORT}/templates/render`,
-        memoryUpsert: `POST http://localhost:${PORT}/memory/upsert`,
-        memoryQuery: `POST http://localhost:${PORT}/memory/query`,
+// Start server only if not running on Vercel
+if (process.env.VERCEL !== '1') {
+    app.listen(PORT, () => {
+        logger.info(`🚀 Server running on http://localhost:${PORT}`);
+        logger.info('Available endpoints:', {
+            health: `GET http://localhost:${PORT}/health`,
+            zipBundles: `POST http://localhost:${PORT}/zip-bundles`,
+            templates: `GET http://localhost:${PORT}/templates`,
+            templateRender: `POST http://localhost:${PORT}/templates/render`,
+            memoryUpsert: `POST http://localhost:${PORT}/memory/upsert`,
+            memoryQuery: `POST http://localhost:${PORT}/memory/query`,
+        });
     });
-});
+}
 
+// Export for Vercel
 export default app;
