@@ -1,0 +1,279 @@
+openapi: 3.1.0
+info:
+  title: GPT Modular Backend
+  version: 1.0.0
+  description: Backend-Service für ZIP-Bundles, Templates und Memory (Supabase)
+servers:
+  - url: https://your-backend.vercel.app
+paths:
+  /health:
+    get:
+      summary: Healthcheck
+      operationId: checkHealth
+      responses:
+        '200':
+          description: Service healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+
+  /zip-bundles:
+    post:
+      summary: Erzeugt ein ZIP-Bundle aus Dateien
+      operationId: createZipBundle
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ZipBundleRequest'
+      responses:
+        '200':
+          description: ZIP erfolgreich erstellt
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ZipBundleResponse'
+        '400':
+          description: Ungültige Eingabe
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /templates:
+    get:
+      summary: Listet alle verfügbaren Templates
+      operationId: listTemplates
+      responses:
+        '200':
+          description: Liste der Templates
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TemplateListItem'
+
+  /templates/render:
+    post:
+      summary: Rendert ein Template mit Daten
+      operationId: renderTemplate
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TemplateRenderRequest'
+      responses:
+        '200':
+          description: Template erfolgreich gerendert
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TemplateRenderResponse'
+        '404':
+          description: Template nicht gefunden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /memory/upsert:
+    post:
+      summary: Speichert oder aktualisiert einen Memory-Eintrag
+      operationId: upsertMemory
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MemoryUpsertRequest'
+      responses:
+        '200':
+          description: Memory erfolgreich gespeichert
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MemoryUpsertResponse'
+
+  /memory/query:
+    post:
+      summary: Liest einen Memory-Eintrag
+      operationId: queryMemory
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MemoryQueryRequest'
+      responses:
+        '200':
+          description: Memory gefunden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MemoryQueryResponse'
+        '404':
+          description: Kein Eintrag gefunden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    HealthResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: ok
+        uptimeSeconds:
+          type: number
+        timestamp:
+          type: string
+          format: date-time
+        services:
+          type: object
+          properties:
+            database:
+              type: boolean
+            storage:
+              type: boolean
+
+    ZipFile:
+      type: object
+      required: [path, kind]
+      properties:
+        path:
+          type: string
+          description: Pfad innerhalb des ZIP
+        kind:
+          type: string
+          enum: [markdown, code, binary, text]
+        language:
+          type: string
+        sourceUrl:
+          type: string
+          format: uri
+        content:
+          type: string
+
+    ZipBundleRequest:
+      type: object
+      required: [projectName, files]
+      properties:
+        projectName:
+          type: string
+          example: kunde-xy-doku
+        files:
+          type: array
+          items:
+            $ref: '#/components/schemas/ZipFile'
+
+    ZipBundleResponse:
+      type: object
+      properties:
+        downloadUrl:
+          type: string
+          format: uri
+        fileCount:
+          type: integer
+
+    TemplateListItem:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        type:
+          type: string
+        description:
+          type: string
+        fields:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+              type:
+                type: string
+              required:
+                type: boolean
+              description:
+                type: string
+
+    TemplateRenderRequest:
+      type: object
+      required: [templateId, data]
+      properties:
+        templateId:
+          type: string
+        data:
+          type: object
+          additionalProperties: true
+        output:
+          type: string
+          enum: [html, pdf]
+          default: html
+
+    TemplateRenderResponse:
+      type: object
+      properties:
+        downloadUrl:
+          type: string
+          format: uri
+        output:
+          type: string
+          enum: [html, pdf]
+
+    MemoryUpsertRequest:
+      type: object
+      required: [userId, key, value]
+      properties:
+        userId:
+          type: string
+        key:
+          type: string
+        value:
+          type: object
+          additionalProperties: true
+
+    MemoryUpsertResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        updated:
+          type: boolean
+
+    MemoryQueryRequest:
+      type: object
+      required: [userId, key]
+      properties:
+        userId:
+          type: string
+        key:
+          type: string
+
+    MemoryQueryResponse:
+      type: object
+      properties:
+        value:
+          type: object
+          additionalProperties: true
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+            message:
+              type: string

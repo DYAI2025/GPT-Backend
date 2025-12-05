@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPT Backend Services - Control Panel</title>
+    <meta name="description" content="Configure and manage your Custom GPT backend services - ZIP bundling, Template rendering, and Memory storage">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="bg-animation">
+        <div class="bg-gradient"></div>
+        <div class="bg-grid"></div>
+        <div class="floating-orbs">
+            <div class="orb orb-1"></div>
+            <div class="orb orb-2"></div>
+            <div class="orb orb-3"></div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                            <path d="M2 17l10 5 10-5"/>
+                            <path d="M2 12l10 5 10-5"/>
+                        </svg>
+                    </div>
+                    <span class="logo-text">GPT Backend</span>
+                </div>
+                <nav class="nav">
+                    <a href="#services" class="nav-link">Services</a>
+                    <a href="#templates" class="nav-link">Templates</a>
+                    <a href="#config" class="nav-link">Configuration</a>
+                    <a href="#docs" class="nav-link">Docs</a>
+                </nav>
+                <div class="header-actions">
+                    <span class="status-badge" id="connectionStatus">
+                        <span class="status-dot"></span>
+                        Checking...
+                    </span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <!-- Hero Section -->
+            <section class="hero">
+                <div class="hero-content">
+                    <div class="hero-badge">
+                        <span class="badge-icon">⚡</span>
+                        <span>Modular GPT Backend</span>
+                    </div>
+                    <h1 class="hero-title">
+                        Supercharge Your
+                        <span class="gradient-text">Custom GPTs</span>
+                    </h1>
+                    <p class="hero-description">
+                        A powerful backend service providing ZIP bundling, template rendering, and persistent memory 
+                        for your Custom GPT actions. Configure, deploy, and manage all services from one place.
+                    </p>
+                    <div class="hero-actions">
+                        <button class="btn btn-primary" onclick="scrollToSection('config')">
+                            <span>Configure Backend</span>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </button>
+                        <button class="btn btn-secondary" onclick="scrollToSection('docs')">
+                            <span>View Documentation</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="hero-visual">
+                    <div class="code-window">
+                        <div class="code-header">
+                            <div class="code-dots">
+                                <span class="dot red"></span>
+                                <span class="dot yellow"></span>
+                                <span class="dot green"></span>
+                            </div>
+                            <span class="code-title">API Response</span>
+                        </div>
+                        <pre class="code-content"><code>{
+  <span class="key">"status"</span>: <span class="string">"ok"</span>,
+  <span class="key">"services"</span>: {
+    <span class="key">"zip"</span>: <span class="boolean">true</span>,
+    <span class="key">"templates"</span>: <span class="boolean">true</span>,
+    <span class="key">"memory"</span>: <span class="boolean">true</span>
+  },
+  <span class="key">"uptimeSeconds"</span>: <span class="number">86400</span>
+}</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Services Section -->
+            <section id="services" class="section">
+                <div class="section-header">
+                    <h2 class="section-title">Available Services</h2>
+                    <p class="section-description">
+                        Three powerful services to enhance your Custom GPT capabilities
+                    </p>
+                </div>
+                <div class="services-grid">
+                    <!-- ZIP Service -->
+                    <div class="service-card">
+                        <div class="service-icon zip">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 8v13H3V8"/>
+                                <path d="M1 3h22v5H1z"/>
+                                <path d="M10 12h4"/>
+                            </svg>
+                        </div>
+                        <h3 class="service-title">ZIP Bundler</h3>
+                        <p class="service-description">
+                            Create ZIP bundles from dynamically generated files. Support for Markdown, code, 
+                            and binary files with automatic cloud storage.
+                        </p>
+                        <div class="service-endpoint">
+                            <code>POST /zip-bundles</code>
+                        </div>
+                        <div class="service-features">
+                            <span class="feature">📦 Auto-packaging</span>
+                            <span class="feature">☁️ Cloud storage</span>
+                            <span class="feature">🔗 Public URLs</span>
+                        </div>
+                    </div>
+
+                    <!-- Template Service -->
+                    <div class="service-card">
+                        <div class="service-icon templates">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="3" width="18" height="18" rx="2"/>
+                                <path d="M3 9h18"/>
+                                <path d="M9 21V9"/>
+                            </svg>
+                        </div>
+                        <h3 class="service-title">Template Renderer</h3>
+                        <p class="service-description">
+                            Render beautiful, pre-designed templates with dynamic data. Export as HTML or PDF 
+                            for reports, covers, and data visualizations.
+                        </p>
+                        <div class="service-endpoint">
+                            <code>POST /templates/render</code>
+                        </div>
+                        <div class="service-features">
+                            <span class="feature">🎨 Premium designs</span>
+                            <span class="feature">📄 PDF export</span>
+                            <span class="feature">🔄 Dynamic data</span>
+                        </div>
+                    </div>
+
+                    <!-- Memory Service -->
+                    <div class="service-card">
+                        <div class="service-icon memory">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
+                                <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                                <line x1="12" y1="19" x2="12" y2="22"/>
+                            </svg>
+                        </div>
+                        <h3 class="service-title">Persistent Memory</h3>
+                        <p class="service-description">
+                            Store and retrieve user-specific data with Supabase. Perfect for preferences, 
+                            history, and contextual information across sessions.
+                        </p>
+                        <div class="service-endpoint">
+                            <code>POST /memory/upsert</code>
+                        </div>
+                        <div class="service-features">
+                            <span class="feature">💾 Persistent</span>
+                            <span class="feature">🔐 Secure</span>
+                            <span class="feature">⚡ Fast</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Templates Section -->
+            <section id="templates" class="section">
+                <div class="section-header">
+                    <h2 class="section-title">Template Gallery</h2>
+                    <p class="section-description">
+                        Pre-built templates ready for your GPT to use
+                    </p>
+                </div>
+                <div class="templates-grid" id="templatesGrid">
+                    <!-- Templates will be loaded dynamically -->
+                    <div class="template-card loading">
+                        <div class="skeleton skeleton-image"></div>
+                        <div class="skeleton skeleton-title"></div>
+                        <div class="skeleton skeleton-text"></div>
+                    </div>
+                    <div class="template-card loading">
+                        <div class="skeleton skeleton-image"></div>
+                        <div class="skeleton skeleton-title"></div>
+                        <div class="skeleton skeleton-text"></div>
+                    </div>
+                    <div class="template-card loading">
+                        <div class="skeleton skeleton-image"></div>
+                        <div class="skeleton skeleton-title"></div>
+                        <div class="skeleton skeleton-text"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Configuration Section -->
+            <section id="config" class="section">
+                <div class="section-header">
+                    <h2 class="section-title">Backend Configuration</h2>
+                    <p class="section-description">
+                        Configure your backend endpoint and test the connection
+                    </p>
+                </div>
+                <div class="config-panel">
+                    <div class="config-form">
+                        <div class="form-group">
+                            <label for="backendUrl">Backend URL</label>
+                            <div class="input-group">
+                                <span class="input-prefix">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="12" cy="12" r="10"/>
+                                        <path d="M2 12h20"/>
+                                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                                    </svg>
+                                </span>
+                                <input 
+                                    type="url" 
+                                    id="backendUrl" 
+                                    placeholder="https://your-backend.vercel.app"
+                                    value="http://localhost:3000"
+                                >
+                                <button class="btn-icon" onclick="testConnection()" title="Test Connection">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                                        <polyline points="22 4 12 14.01 9 11.01"/>
+                                    </svg>
+                                </button>
+                            </div>
+                            <span class="input-hint">Enter your deployed backend URL or localhost for development</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="supabaseUrl">Supabase URL</label>
+                            <input 
+                                type="url" 
+                                id="supabaseUrl" 
+                                placeholder="https://your-project.supabase.co"
+                                class="input"
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="storageBucket">Storage Bucket (ZIPs)</label>
+                            <input 
+                                type="text" 
+                                id="storageBucket" 
+                                placeholder="zips"
+                                value="zips"
+                                class="input"
+                            >
+                        </div>
+
+                        <div class="form-actions">
+                            <button class="btn btn-primary" onclick="saveConfig()">
+                                Save Configuration
+                            </button>
+                            <button class="btn btn-secondary" onclick="exportConfig()">
+                                Export as .env
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="config-preview">
+                        <h4>Connection Status</h4>
+                        <div class="status-panel" id="statusPanel">
+                            <div class="status-item">
+                                <span class="status-label">Health Check</span>
+                                <span class="status-value" id="healthStatus">-</span>
+                            </div>
+                            <div class="status-item">
+                                <span class="status-label">Database</span>
+                                <span class="status-value" id="dbStatus">-</span>
+                            </div>
+                            <div class="status-item">
+                                <span class="status-label">Storage</span>
+                                <span class="status-value" id="storageStatus">-</span>
+                            </div>
+                            <div class="status-item">
+                                <span class="status-label">Uptime</span>
+                                <span class="status-value" id="uptimeStatus">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- API Tester Section -->
+            <section id="tester" class="section">
+                <div class="section-header">
+                    <h2 class="section-title">API Tester</h2>
+                    <p class="section-description">
+                        Test your endpoints directly from the browser
+                    </p>
+                </div>
+                <div class="tester-panel">
+                    <div class="tester-tabs">
+                        <button class="tab active" data-tab="zip">ZIP Bundle</button>
+                        <button class="tab" data-tab="template">Template</button>
+                        <button class="tab" data-tab="memory">Memory</button>
+                    </div>
+
+                    <!-- ZIP Tab -->
+                    <div class="tab-content active" id="tab-zip">
+                        <div class="request-builder">
+                            <div class="form-group">
+                                <label>Project Name</label>
+                                <input type="text" id="zipProjectName" value="my-project" class="input">
+                            </div>
+                            <div class="form-group">
+                                <label>Files (JSON Array)</label>
+                                <textarea id="zipFiles" class="textarea" rows="10">[
+  {
+    "path": "README.md",
+    "kind": "markdown",
+    "content": "# My Project\\n\\nThis is a sample project."
+  },
+  {
+    "path": "src/index.ts",
+    "kind": "code",
+    "language": "typescript",
+    "content": "console.log('Hello, World!');"
+  }
+]</textarea>
+                            </div>
+                            <button class="btn btn-primary" onclick="testZipBundle()">
+                                Create ZIP Bundle
+                            </button>
+                        </div>
+                        <div class="response-viewer">
+                            <h4>Response</h4>
+                            <pre id="zipResponse" class="response-output">// Response will appear here</pre>
+                        </div>
+                    </div>
+
+                    <!-- Template Tab -->
+                    <div class="tab-content" id="tab-template">
+                        <div class="request-builder">
+                            <div class="form-group">
+                                <label>Template ID</label>
+                                <select id="templateId" class="input">
+                                    <option value="magazin-cover">Magazin Cover</option>
+                                    <option value="report-header">Report Header</option>
+                                    <option value="data-card">Data Card</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Data (JSON)</label>
+                                <textarea id="templateData" class="textarea" rows="8">{
+  "title": "Amazing Report",
+  "subtitle": "Q4 2024 Results",
+  "author": "Your Name"
+}</textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Output Format</label>
+                                <select id="templateOutput" class="input">
+                                    <option value="html">HTML</option>
+                                    <option value="pdf">PDF</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-primary" onclick="testTemplateRender()">
+                                Render Template
+                            </button>
+                        </div>
+                        <div class="response-viewer">
+                            <h4>Response</h4>
+                            <pre id="templateResponse" class="response-output">// Response will appear here</pre>
+                        </div>
+                    </div>
+
+                    <!-- Memory Tab -->
+                    <div class="tab-content" id="tab-memory">
+                        <div class="request-builder">
+                            <div class="form-group">
+                                <label>User ID</label>
+                                <input type="text" id="memoryUserId" value="user-123" class="input">
+                            </div>
+                            <div class="form-group">
+                                <label>Key</label>
+                                <input type="text" id="memoryKey" value="preferences" class="input">
+                            </div>
+                            <div class="form-group">
+                                <label>Value (JSON - for Upsert)</label>
+                                <textarea id="memoryValue" class="textarea" rows="6">{
+  "theme": "dark",
+  "language": "en"
+}</textarea>
+                            </div>
+                            <div class="btn-group">
+                                <button class="btn btn-primary" onclick="testMemoryUpsert()">
+                                    Upsert
+                                </button>
+                                <button class="btn btn-secondary" onclick="testMemoryQuery()">
+                                    Query
+                                </button>
+                            </div>
+                        </div>
+                        <div class="response-viewer">
+                            <h4>Response</h4>
+                            <pre id="memoryResponse" class="response-output">// Response will appear here</pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Documentation Section -->
+            <section id="docs" class="section">
+                <div class="section-header">
+                    <h2 class="section-title">GPT Action Setup</h2>
+                    <p class="section-description">
+                        Copy these configurations to set up your Custom GPT
+                    </p>
+                </div>
+                <div class="docs-grid">
+                    <div class="doc-card">
+                        <h4>System Prompt</h4>
+                        <p>Add this to your GPT's instructions</p>
+                        <button class="btn btn-secondary btn-sm" onclick="copySystemPrompt()">
+                            Copy System Prompt
+                        </button>
+                    </div>
+                    <div class="doc-card">
+                        <h4>OpenAPI Schema</h4>
+                        <p>Import this in the GPT Builder</p>
+                        <button class="btn btn-secondary btn-sm" onclick="downloadOpenAPI()">
+                            Download openapi.yaml
+                        </button>
+                    </div>
+                    <div class="doc-card">
+                        <h4>Action Descriptions</h4>
+                        <p>Descriptions for each action</p>
+                        <button class="btn btn-secondary btn-sm" onclick="showActionDocs()">
+                            View Descriptions
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>GPT Backend Services © 2024 • Built for Custom GPT Actions</p>
+        </div>
+    </footer>
+
+    <!-- Toast Notifications -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
