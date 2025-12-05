@@ -1,51 +1,44 @@
 openapi: 3.1.0
 info:
-  title: GPT Modular Backend
+  title: GPT Backend Services API
+  description: |
+    Backend-Service für Custom GPT Actions.
+    Ermöglicht das Erstellen von Pinterest Pins und anderen Templates.
   version: 1.0.0
-  description: Backend-Service für ZIP-Bundles, Templates und Memory (Supabase)
+  contact:
+    name: DYAI2025
+    email: privacy@dyai2025.com
+
 servers:
-  - url: https://your-backend.vercel.app
+  - url: https://backend-dyai2025s-projects.vercel.app
+    description: Production Server
+
 paths:
   /health:
     get:
-      summary: Healthcheck
       operationId: checkHealth
+      summary: Health Check
+      description: Überprüft ob der Backend-Service erreichbar ist
       responses:
         '200':
-          description: Service healthy
+          description: Service ist gesund
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HealthResponse'
-
-  /zip-bundles:
-    post:
-      summary: Erzeugt ein ZIP-Bundle aus Dateien
-      operationId: createZipBundle
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ZipBundleRequest'
-      responses:
-        '200':
-          description: ZIP erfolgreich erstellt
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ZipBundleResponse'
-        '400':
-          description: Ungültige Eingabe
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "ok"
+                  timestamp:
+                    type: string
+                    format: date-time
 
   /templates:
     get:
-      summary: Listet alle verfügbaren Templates
       operationId: listTemplates
+      summary: Alle Templates auflisten
+      description: Gibt eine Liste aller verfügbaren Templates zurück (Pinterest Pins, etc.)
       responses:
         '200':
           description: Liste der Templates
@@ -54,226 +47,138 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/TemplateListItem'
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      description: Template ID zum Rendern
+                    name:
+                      type: string
+                      description: Anzeigename
+                    type:
+                      type: string
+                      description: Kategorie (z.B. pinterest)
+                    description:
+                      type: string
+                    fields:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                          type:
+                            type: string
+                          required:
+                            type: boolean
 
   /templates/render:
     post:
-      summary: Rendert ein Template mit Daten
       operationId: renderTemplate
+      summary: Template rendern
+      description: |
+        Rendert ein Template mit den angegebenen Daten zu HTML.
+        Der HTML-Code kann direkt verwendet werden um das Design anzuzeigen.
+        
+        Verfügbare Templates:
+        - pinterest-quote: Zitat-Pin (1000x1500px)
+        - pinterest-tips: Tipps-Pin (1000x1500px)  
+        - pinterest-story: Story Pin (1080x1920px)
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TemplateRenderRequest'
+              type: object
+              required:
+                - templateId
+                - data
+              properties:
+                templateId:
+                  type: string
+                  description: ID des Templates
+                  enum:
+                    - pinterest-quote
+                    - pinterest-tips
+                    - pinterest-story
+                data:
+                  type: object
+                  description: Template-spezifische Daten
+                  properties:
+                    quote:
+                      type: string
+                      description: Zitat-Text (für pinterest-quote)
+                    author:
+                      type: string
+                      description: Autor des Zitats
+                    title:
+                      type: string
+                      description: Hauptüberschrift (für pinterest-tips, pinterest-story)
+                    subtitle:
+                      type: string
+                      description: Untertitel
+                    tips:
+                      type: array
+                      items:
+                        type: string
+                      description: Liste von Tipps (für pinterest-tips)
+                    month:
+                      type: string
+                      description: Monat (für pinterest-story)
+                    year:
+                      type: string
+                      description: Jahr (für pinterest-story)
+                    brandName:
+                      type: string
+                      description: Markenname für Branding
+            examples:
+              pinterest_quote:
+                summary: Pinterest Quote erstellen
+                value:
+                  templateId: "pinterest-quote"
+                  data:
+                    quote: "Die Zukunft gehört denen, die an ihre Träume glauben."
+                    author: "Eleanor Roosevelt"
+              pinterest_story:
+                summary: Pinterest Story erstellen
+                value:
+                  templateId: "pinterest-story"
+                  data:
+                    title: "Dezember Highlights"
+                    subtitle: "Die schönsten Momente"
+                    month: "Dezember"
+                    year: "2024"
       responses:
         '200':
           description: Template erfolgreich gerendert
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TemplateRenderResponse'
+                type: object
+                properties:
+                  html:
+                    type: string
+                    description: Der gerenderte HTML-Code des Templates
+                  output:
+                    type: string
+                    example: "html"
+                  message:
+                    type: string
+        '400':
+          description: Ungültige Anfrage
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
         '404':
           description: Template nicht gefunden
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-
-  /memory/upsert:
-    post:
-      summary: Speichert oder aktualisiert einen Memory-Eintrag
-      operationId: upsertMemory
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/MemoryUpsertRequest'
-      responses:
-        '200':
-          description: Memory erfolgreich gespeichert
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MemoryUpsertResponse'
-
-  /memory/query:
-    post:
-      summary: Liest einen Memory-Eintrag
-      operationId: queryMemory
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/MemoryQueryRequest'
-      responses:
-        '200':
-          description: Memory gefunden
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MemoryQueryResponse'
-        '404':
-          description: Kein Eintrag gefunden
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-
-components:
-  schemas:
-    HealthResponse:
-      type: object
-      properties:
-        status:
-          type: string
-          example: ok
-        uptimeSeconds:
-          type: number
-        timestamp:
-          type: string
-          format: date-time
-        services:
-          type: object
-          properties:
-            database:
-              type: boolean
-            storage:
-              type: boolean
-
-    ZipFile:
-      type: object
-      required: [path, kind]
-      properties:
-        path:
-          type: string
-          description: Pfad innerhalb des ZIP
-        kind:
-          type: string
-          enum: [markdown, code, binary, text]
-        language:
-          type: string
-        sourceUrl:
-          type: string
-          format: uri
-        content:
-          type: string
-
-    ZipBundleRequest:
-      type: object
-      required: [projectName, files]
-      properties:
-        projectName:
-          type: string
-          example: kunde-xy-doku
-        files:
-          type: array
-          items:
-            $ref: '#/components/schemas/ZipFile'
-
-    ZipBundleResponse:
-      type: object
-      properties:
-        downloadUrl:
-          type: string
-          format: uri
-        fileCount:
-          type: integer
-
-    TemplateListItem:
-      type: object
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        type:
-          type: string
-        description:
-          type: string
-        fields:
-          type: array
-          items:
-            type: object
-            properties:
-              name:
-                type: string
-              type:
-                type: string
-              required:
-                type: boolean
-              description:
-                type: string
-
-    TemplateRenderRequest:
-      type: object
-      required: [templateId, data]
-      properties:
-        templateId:
-          type: string
-        data:
-          type: object
-          additionalProperties: true
-        output:
-          type: string
-          enum: [html, pdf]
-          default: html
-
-    TemplateRenderResponse:
-      type: object
-      properties:
-        downloadUrl:
-          type: string
-          format: uri
-        output:
-          type: string
-          enum: [html, pdf]
-
-    MemoryUpsertRequest:
-      type: object
-      required: [userId, key, value]
-      properties:
-        userId:
-          type: string
-        key:
-          type: string
-        value:
-          type: object
-          additionalProperties: true
-
-    MemoryUpsertResponse:
-      type: object
-      properties:
-        success:
-          type: boolean
-        updated:
-          type: boolean
-
-    MemoryQueryRequest:
-      type: object
-      required: [userId, key]
-      properties:
-        userId:
-          type: string
-        key:
-          type: string
-
-    MemoryQueryResponse:
-      type: object
-      properties:
-        value:
-          type: object
-          additionalProperties: true
-
-    ErrorResponse:
-      type: object
-      properties:
-        error:
-          type: object
-          properties:
-            code:
-              type: string
-            message:
-              type: string
+                type: object
+                properties:
+                  error:
+                    type: string
