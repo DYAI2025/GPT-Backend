@@ -349,7 +349,7 @@ function renderToHtml(
       `;
       break;
 
-    case 'data-card':
+    case 'data-card': {
       const trend = String(data.trend || 'neutral');
       const trendClass = trend === 'up' ? 'trend-up' : trend === 'down' ? 'trend-down' : '';
       const color = String(data.color || '#667eea');
@@ -365,6 +365,7 @@ function renderToHtml(
         </div>
       `;
       break;
+    }
 
     // === PINTEREST TEMPLATES ===
     case 'pinterest-quote':
