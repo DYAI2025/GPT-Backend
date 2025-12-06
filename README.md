@@ -1,174 +1,132 @@
-# GPT Modular Backend
+# 🧠 GPT Backend Services
 
-A powerful, modular backend service for Custom GPT Actions providing ZIP bundling, template rendering, and persistent memory capabilities.
+Ein modulares, serverless Backend für **OpenAI Custom GPTs**, gehostet auf Vercel.
+Dieses Projekt stellt leistungsstarke "Actions" bereit, die deine GPTs mit Fähigkeiten wie **Dateierstellung (ZIP, PDF, SVG)**, **Visuellem Rendering** und **Langzeitgedächtnis** ausstatten.
 
-## 🚀 Features
+---
 
-- **ZIP Bundler** - Create downloadable ZIP archives from dynamically generated files
-- **Template Renderer** - Render beautiful pre-designed templates to HTML/PDF
-- **Persistent Memory** - Store and retrieve user-specific data via Supabase
-- **Beautiful UI** - Configuration dashboard (GitHub Pages compatible)
+## ✨ Features
 
-## 📁 Project Structure
+### 1. 🏗️ Canva & Design Automation
+Wandelt JSON-Spezifikationen (`canva_spec.json`) in visuelle Assets um.
+*   **SVG Rendering:** Vektorbasierte Layouts aus JSON-Daten.
+*   **PDF Export:** Downloadbare PDF-Dateien direkt im Chat.
+*   **HTML Preview:** Live-Vorschau von Designs im Browser (mit Dark Mode).
+
+### 2. 📦 ZIP Bundling Service
+Erlaubt dem GPT, **mehrere Dateien** zu erzeugen und gebündelt bereitzustellen.
+*   **Use Case:** "Erstelle mir 5 Instagram Posts und die passenden CSV-Daten."
+*   **Technik:** Streaming-Response (keine temporäre Speicherung nötig).
+
+### 3. 🧠 Memory (Gedächtnis)
+Langzeitspeicher für User-Präferenzen (z.B. Markenfarben, Tone of Voice).
+*   **Datenbank:** Supabase (PostgreSQL).
+*   **Isolation:** Speicherung pro `userId` (oder Brand-Key).
+
+### 4. 🎨 Template Engine
+Serverseitiges Rendering von HTML-Templates für Social Media.
+*   **Templates:** `pinterest-story`, `pinterest-quote`, etc.
+*   **Output:** HTML (kann vom User als Bild gespeichert oder in Canva genutzt werden).
+
+---
+
+## 🚀 API Endpoints
+
+Basis URL (Produktion): `https://backend-dyai2025s-projects.vercel.app`
+
+### 🎨 Canva Converter
+| Methode | Endpoint | Beschreibung | Body |
+|---------|----------|--------------|------|
+| `POST` | `/canva/convert` | Generiert SVG oder PDF | `{ spec: {...}, output: "svg"|"pdf" }` |
+| `POST` | `/canva/preview` | HTML Vorschau Seite | `{ spec: {...}, theme: "light"|"dark" }` |
+
+### 📦 ZIP Service
+| Methode | Endpoint | Beschreibung | Body |
+|---------|----------|--------------|------|
+| `POST` | `/zip-bundles` | Erstellt ZIP Download | `{ files: [{ path, content }] }` |
+
+### 🧠 Memory
+| Methode | Endpoint | Beschreibung | Body |
+|---------|----------|--------------|------|
+| `POST` | `/memory/upsert` | Speichert Daten | `{ userId, memoryKey, content }` |
+| `POST` | `/memory/query` | Sucht Daten | `{ userId, search, memoryKey }` |
+
+### 🔍 System
+| Methode | Endpoint | Beschreibung |
+|---------|----------|--------------|
+| `GET` | `/health` | Server & DB Status prüfen |
+| `GET` | `/templates` | Liste aller Templates |
+
+---
+
+## 🛠️ Installation & Setup
+
+### Voraussetzungen
+*   Node.js 18+
+*   Vercel CLI (`npm i -g vercel`)
+*   Supabase Account (optional für Memory)
+
+### 1. Projekt klonen & installieren
+```bash
+git clone https://github.com/DYAI2025/GPT-Backend.git
+cd gpt-backend/backend
+npm install
+```
+
+### 2. Lokale Entwicklung
+Erstelle eine `.env` Datei im `backend` Ordner:
+```env
+SUPABASE_URL=dein_supabase_url
+SUPABASE_SERVICE_KEY=dein_secret_key
+CORS_ALLOW_ORIGINS=*
+```
+
+Starte den Server:
+```bash
+npm run dev
+# Server läuft auf http://localhost:3000
+```
+
+### 3. Deployment auf Vercel
+Das Projekt ist für Vercel optimiert (Serverless Functions via `api/index.ts` Entrypoint).
+
+```bash
+vercel --prod
+```
+*   Setze die `SUPABASE_..` Environment Variables im Vercel Dashboard.
+
+---
+
+## 🤖 GPT Integration (Custom GPTs)
+
+Um dieses Backend in einem Custom GPT zu nutzen:
+
+1.  **GPT Editor öffnen:** "Configure" -> "Create new action".
+2.  **Schema Import:** Importiere das OpenAPI Schema von:
+    `https://raw.githubusercontent.com/DYAI2025/GPT-Backend/main/backend/openapi.yaml`
+3.  **Authentication:** `None`.
+4.  **Privacy Policy:** 
+    `https://dyai2025.github.io/GPT-Backend/privacy.html`
+
+### System Prompt (Beispiel)
+Füge dies in die "Instructions" deines GPTs ein:
+> "Du bist der Social Media Architect. Nutze die Action `convertCanvaSpec`, um Designs zu visualisieren, und `createZipBundle`, um Datenpakete zu schnüren. Speichere Markenfarben via `upsertMemory`."
+
+---
+
+## 📁 Projektstruktur
 
 ```
 gpt-backend/
-├── backend/                 # Node.js/TypeScript API Server
+├── backend/            # Express Server Code
 │   ├── src/
-│   │   ├── index.ts        # Express server entry point
-│   │   ├── routes/         # API route handlers
-│   │   ├── services/       # Business logic
-│   │   ├── lib/            # Utilities (Supabase, Storage, Logger)
-│   │   ├── middleware/     # Error handling
-│   │   └── types/          # TypeScript interfaces
-│   ├── openapi.yaml        # API specification
-│   └── supabase-schema.sql # Database schema
-│
-└── frontend/               # Static UI (GitHub Pages)
-    ├── index.html
-    ├── css/styles.css
-    └── js/app.js
+│   │   ├── routes/     # API Endpoints (canva.ts, zip.ts...)
+│   │   ├── lib/        # Logic (Rendering, DB...)
+│   │   └── schemas/    # JSON Validation
+│   └── openapi.yaml    # API Definition für GPT
+├── frontend/           # Test-Dashboard (GitHub Pages)
+└── skill_canva.../     # GPT Prompt & Docs
 ```
 
-## 🛠️ Setup
-
-### Prerequisites
-
-- Node.js 18+
-- Supabase account (for database and storage)
-
-### 1. Backend Setup
-
-```bash
-cd backend
-npm install
-cp .env.example .env
-# Edit .env with your Supabase credentials
-```
-
-### 2. Supabase Setup
-
-1. Create a new Supabase project
-2. Run `supabase-schema.sql` in the SQL Editor
-3. Create storage buckets: `zips` and `renders`
-4. Copy your project URL and service key to `.env`
-
-### 3. Run Development Server
-
-```bash
-npm run dev
-# Server runs at http://localhost:3000
-```
-
-### 4. Deploy Backend
-
-**Vercel:**
-```bash
-npm run build
-vercel deploy
-```
-
-**Railway/Render:**
-- Connect GitHub repo
-- Set environment variables
-- Deploy
-
-### 5. Host Frontend (GitHub Pages)
-
-1. Push the `frontend/` folder to a GitHub repo
-2. Enable GitHub Pages in Settings
-3. Access at `https://yourusername.github.io/repo-name/`
-
-## 📡 API Endpoints
-
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/health` | GET | Health check |
-| `/zip-bundles` | POST | Create ZIP archive |
-| `/templates` | GET | List available templates |
-| `/templates/render` | POST | Render a template |
-| `/memory/upsert` | POST | Save memory entry |
-| `/memory/query` | POST | Retrieve memory entry |
-
-## 🔧 GPT Builder Setup
-
-1. Open the GPT Builder
-2. Add an Action with your backend URL
-3. Import `openapi.yaml` or configure manually
-4. Add the system prompt from the UI
-
-## 📝 Example Requests
-
-### Create ZIP Bundle
-
-```json
-POST /zip-bundles
-{
-  "projectName": "my-project",
-  "files": [
-    {
-      "path": "README.md",
-      "kind": "markdown",
-      "content": "# My Project\n\nHello World!"
-    },
-    {
-      "path": "src/index.ts",
-      "kind": "code",
-      "language": "typescript",
-      "content": "console.log('Hello!');"
-    }
-  ]
-}
-```
-
-### Render Template
-
-```json
-POST /templates/render
-{
-  "templateId": "magazin-cover",
-  "data": {
-    "title": "Amazing Report",
-    "subtitle": "Q4 2024 Results",
-    "author": "John Doe"
-  },
-  "output": "pdf"
-}
-```
-
-### Store Memory
-
-```json
-POST /memory/upsert
-{
-  "userId": "user-123",
-  "key": "preferences",
-  "value": {
-    "theme": "dark",
-    "language": "en"
-  }
-}
-```
-
-## 🎨 Available Templates
-
-- **Magazin Cover** - Professional magazine-style cover page
-- **Report Header** - Business report header section  
-- **Data Card** - Visual data display component
-
-## 🔒 Environment Variables
-
-```env
-NODE_ENV=production
-PORT=3000
-SUPABASE_URL=https://your-project.supabase.co
-SUPABASE_SERVICE_KEY=your-service-key
-SUPABASE_STORAGE_BUCKET_ZIPS=zips
-SUPABASE_STORAGE_BUCKET_RENDERS=renders
-CORS_ALLOW_ORIGINS=*
-LOG_LEVEL=info
-```
-
-## 📄 License
-
-MIT
+## 📄 Lizenz
+MIT License.
