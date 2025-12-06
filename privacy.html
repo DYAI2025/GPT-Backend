@@ -1,185 +1,86 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Datenschutzrichtlinie - GPT Backend Services</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>Privacy Policy - GPT Backend Services</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
-            font-family: 'Inter', -apple-system, sans-serif;
-            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
-            min-height: 100vh;
-            color: #fff;
-            line-height: 1.8;
-        }
-
-        .container {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
             max-width: 800px;
             margin: 0 auto;
-            padding: 60px 20px;
+            padding: 20px;
+            color: #333;
         }
 
         h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .subtitle {
-            color: rgba(255, 255, 255, 0.6);
-            margin-bottom: 40px;
-        }
-
-        .card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            padding: 30px;
-            margin-bottom: 24px;
+            border-bottom: 2px solid #eaeaea;
+            padding-bottom: 10px;
         }
 
         h2 {
-            color: #667eea;
-            font-size: 1.3rem;
-            margin-bottom: 16px;
+            margin-top: 30px;
+            color: #444;
         }
 
-        p,
-        li {
-            color: rgba(255, 255, 255, 0.85);
-            margin-bottom: 12px;
-        }
-
-        ul {
-            padding-left: 24px;
-        }
-
-        li {
-            margin-bottom: 8px;
-        }
-
-        a {
-            color: #667eea;
-        }
-
-        .footer {
-            text-align: center;
-            margin-top: 40px;
-            color: rgba(255, 255, 255, 0.4);
+        .date {
+            color: #666;
+            font-style: italic;
         }
     </style>
 </head>
 
 <body>
-    <div class="container">
-        <h1>Datenschutzrichtlinie</h1>
-        <p class="subtitle">GPT Backend Services - Privacy Policy</p>
+    <h1>Privacy Policy</h1>
+    <p class="date">Last updated: December 6, 2024</p>
 
-        <div class="card">
-            <h2>1. Verantwortlicher</h2>
-            <p>Diese Datenschutzrichtlinie gilt für den GPT Backend Service, bereitgestellt von DYAI2025.</p>
-            <p>Kontakt: <a href="mailto:privacy@dyai2025.com">privacy@dyai2025.com</a></p>
-        </div>
+    <p>This Privacy Policy describes how the <strong>GPT Backend Service</strong> ("we", "us", or "our") collects, uses,
+        and shares information when you use our services through OpenAI's ChatGPT (Custom GPTs).</p>
 
-        <div class="card">
-            <h2>2. Welche Daten werden verarbeitet?</h2>
-            <p>Der Service verarbeitet folgende Daten:</p>
-            <ul>
-                <li><strong>API-Anfragen:</strong> Inhalte, die über die API gesendet werden (Texte, Dateinamen,
-                    Template-Daten)</li>
-                <li><strong>Memory-Daten:</strong> Benutzer-ID und zugehörige Schlüssel-Wert-Paare (nur wenn der
-                    Memory-Service genutzt wird)</li>
-                <li><strong>Generierte Dateien:</strong> ZIP-Archive und gerenderte Templates werden temporär
-                    gespeichert</li>
-                <li><strong>Technische Daten:</strong> IP-Adressen, Zeitstempel, User-Agent (für Logging und Sicherheit)
-                </li>
-            </ul>
-        </div>
+    <h2>1. Information We Collect</h2>
+    <p>We collect information solely to provide the technical functionality of the GPT actions (ZIP creation, Template
+        rendering, Memory storage).</p>
+    <ul>
+        <li><strong>Input Data:</strong> Text, code, or content you explicitly send to the GPT for processing (e.g., to
+            create a ZIP file or render a PDF).</li>
+        <li><strong>Memory Data:</strong> Brand preferences (colors, fonts, brand names) that you ask the GPT to
+            remember. This data is stored using a user-provided ID (e.g., Brand Code).</li>
+        <li><strong>Log Data:</strong> Our hosting provider (Vercel) may collect standard server logs (IP address,
+            browser type, timestamp) for security and debugging purposes.</li>
+    </ul>
 
-        <div class="card">
-            <h2>3. Zweck der Datenverarbeitung</h2>
-            <ul>
-                <li>Bereitstellung der API-Dienste (ZIP-Erstellung, Template-Rendering, Memory-Speicherung)</li>
-                <li>Technische Wartung und Fehlerbehebung</li>
-                <li>Sicherheit und Missbrauchsprävention</li>
-            </ul>
-        </div>
+    <h2>2. How We Use Your Information</h2>
+    <p>We use the collected information to:</p>
+    <ul>
+        <li>Generate files (ZIPs, HTML, PDFs) as requested by you.</li>
+        <li>Store your design preferences to improve your experience in future sessions.</li>
+        <li>Maintain and improve the security of our backend services.</li>
+    </ul>
 
-        <div class="card">
-            <h2>4. Datenspeicherung</h2>
-            <ul>
-                <li><strong>Memory-Daten:</strong> Werden in Supabase (PostgreSQL) gespeichert und bleiben erhalten, bis
-                    sie gelöscht werden</li>
-                <li><strong>Generierte Dateien:</strong> Werden in Supabase Storage gespeichert und nach 30 Tagen
-                    automatisch gelöscht</li>
-                <li><strong>Logs:</strong> Werden maximal 7 Tage aufbewahrt</li>
-            </ul>
-        </div>
+    <h2>3. Data Storage and Sharing</h2>
+    <p>We do not sell your personal data. We utilize the following third-party infrastructure providers:</p>
+    <ul>
+        <li><strong>Vercel Inc.:</strong> Hosting of the backend API (Serverless Functions).</li>
+        <li><strong>Supabase (PostgreSQL):</strong> Database storage for the "Memory" feature.</li>
+        <li><strong>OpenAI:</strong> The interface through which you interact with our services. Please refer to
+            OpenAI's privacy policy for their data handling.</li>
+    </ul>
 
-        <div class="card">
-            <h2>5. Datenweitergabe</h2>
-            <p>Daten werden nicht an Dritte verkauft. Folgende Dienste werden genutzt:</p>
-            <ul>
-                <li><strong>Supabase:</strong> Datenbank und Dateispeicherung (Server in EU/USA)</li>
-                <li><strong>Vercel:</strong> Hosting der API (Server global verteilt)</li>
-                <li><strong>OpenAI:</strong> Integration als GPT Custom Action (Anfragen werden von OpenAI
-                    weitergeleitet)</li>
-            </ul>
-        </div>
+    <h2>4. Data Retention</h2>
+    <p><strong>Temporary Files:</strong> ZIP bundles and rendered templates are generated on-the-fly or stored
+        temporarily and are deleted regularly.</p>
+    <p><strong>Long-term Memory:</strong> Data stored via the <code>/memory</code> endpoint remains stored until you
+        overwrite it or request deletion.</p>
 
-        <div class="card">
-            <h2>6. Ihre Rechte (DSGVO)</h2>
-            <ul>
-                <li><strong>Auskunft:</strong> Sie können Auskunft über Ihre gespeicherten Daten verlangen</li>
-                <li><strong>Löschung:</strong> Sie können die Löschung Ihrer Daten verlangen</li>
-                <li><strong>Berichtigung:</strong> Sie können fehlerhafte Daten korrigieren lassen</li>
-                <li><strong>Widerspruch:</strong> Sie können der Datenverarbeitung widersprechen</li>
-            </ul>
-            <p>Kontaktieren Sie uns unter <a href="mailto:privacy@dyai2025.com">privacy@dyai2025.com</a></p>
-        </div>
+    <h2>5. Your Rights</h2>
+    <p>You have the right to request information about your stored data or request its deletion. To do so, please
+        contact the maintainer of this GitHub repository or simply instruct the GPT to overwrite/clear your memory data.
+    </p>
 
-        <div class="card">
-            <h2>7. OpenAI GPT Integration</h2>
-            <p>Dieser Service ist als Custom Action für OpenAI GPTs konzipiert. Bei Nutzung über einen GPT:</p>
-            <ul>
-                <li>OpenAI leitet Ihre Anfragen an unsere API weiter</li>
-                <li>Wir speichern keine Konversationsverläufe</li>
-                <li>Die <a href="https://openai.com/policies/privacy-policy" target="_blank">OpenAI
-                        Datenschutzrichtlinie</a> gilt zusätzlich</li>
-            </ul>
-        </div>
-
-        <div class="card">
-            <h2>8. Sicherheit</h2>
-            <ul>
-                <li>Alle Verbindungen sind HTTPS-verschlüsselt</li>
-                <li>API-Schlüssel werden serverseitig verwaltet</li>
-                <li>Regelmäßige Sicherheitsupdates</li>
-            </ul>
-        </div>
-
-        <div class="card">
-            <h2>9. Änderungen</h2>
-            <p>Diese Richtlinie kann aktualisiert werden. Die aktuelle Version ist immer unter dieser URL verfügbar.</p>
-            <p><strong>Letzte Aktualisierung:</strong> 5. Dezember 2024</p>
-        </div>
-
-        <div class="footer">
-            <p>&copy; 2024 DYAI2025 - GPT Backend Services</p>
-            <p><a href="index.html">← Zurück zum Dashboard</a></p>
-        </div>
-    </div>
+    <h2>6. Contact</h2>
+    <p>For privacy-related inquiries, please open an issue in the associated GitHub repository.</p>
 </body>
 
 </html>
