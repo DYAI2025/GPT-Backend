@@ -68,8 +68,15 @@ async function addFileToArchive(
     archive: archiver.Archiver,
     file: ZipFile
 ): Promise<void> {
+    // Tolerant handling: Accept 'name' as alias for 'path' to fix common GPT errors
+    // @ts-ignore - allow 'name' property even if not in strict type
+    if (!file.path && (file as any).name) {
+        // @ts-ignore
+        file.path = (file as any).name;
+    }
+
     if (!file.path) {
-        throw new ValidationError('file.path is required for each file');
+        throw new ValidationError('file.path (or file.name) is required for each file');
     }
 
     if (file.kind === 'binary' && file.sourceUrl) {
