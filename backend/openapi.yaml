@@ -52,9 +52,9 @@ paths:
                   type: array
                   items:
                     type: object
-                    required: [name, content]
+                    required: [path, content]
                     properties:
-                      name:
+                      path:
                         type: string
                         description: Dateiname im ZIP (z.B. "pin1.html")
                       content:
