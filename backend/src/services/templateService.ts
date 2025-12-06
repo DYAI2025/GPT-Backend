@@ -421,34 +421,11 @@ function escapeHtml(text: string): string {
   return text.replace(/[&<>"']/g, (m) => map[m]);
 }
 
-// Render HTML to PDF using Puppeteer
+// Render HTML to PDF (Mock implementation to avoid Puppeteer bundle size issues)
 async function renderToPdf(html: string): Promise<Buffer> {
-  try {
-    // Dynamic import for Puppeteer
-    const puppeteer = await import('puppeteer');
-    const browser = await puppeteer.default.launch({
-      headless: true,
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],
-    });
-
-    const page = await browser.newPage();
-    await page.setContent(html, { waitUntil: 'networkidle0' });
-
-    const pdf = await page.pdf({
-      format: 'A4',
-      printBackground: true,
-      margin: { top: '20px', right: '20px', bottom: '20px', left: '20px' },
-    });
-
-    await browser.close();
-    return Buffer.from(pdf);
-  } catch (error) {
-    logger.error('PDF rendering failed', {
-      error: error instanceof Error ? error.message : 'Unknown error',
-    });
-    // Fallback: return HTML as buffer if PDF fails
-    return Buffer.from(html, 'utf-8');
-  }
+  logger.warn('PDF rendering via Puppeteer is disabled to optimize bundle size. Returning HTML buffer instead.');
+  // Return HTML as fallback. Real PDF generation is now handled by /canva/convert endpoint via PDFKit.
+  return Buffer.from(html, 'utf-8');
 }
 
 // ============================================
