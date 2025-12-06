@@ -1,1 +1,0 @@
-# Canva Spec Readme\n\nErklärt das Schema `canva_spec.schema.json` und zeigt ein Pitchdeck-Beispiel.\n
