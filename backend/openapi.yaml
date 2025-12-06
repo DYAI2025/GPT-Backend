@@ -111,3 +111,61 @@ paths:
                 content:
                   type: object
                   description: Die Daten als JSON Objekt
+  /canva/convert:
+    post:
+      operationId: convertCanvaSpec
+      summary: Canva Spec zu SVG/PDF konvertieren
+      description: Wandelt ein JSON-Layout in eine Vektordatei oder PDF um.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [spec]
+              properties:
+                spec:
+                  type: object
+                  description: Das canva_spec.json Objekt
+                output:
+                  type: string
+                  enum: [svg, pdf]
+                  default: svg
+      responses:
+        '200':
+          description: Die generierte Datei (Binary)
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+            image/svg+xml:
+              schema:
+                type: string
+                format: binary
+  /canva/preview:
+    post:
+      operationId: previewCanvaSpec
+      summary: HTML Vorschau generieren
+      description: Erzeugt eine vollständige HTML-Seite mit dem Design als Vorschau.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [spec]
+              properties:
+                spec:
+                  type: object
+                theme:
+                  type: string
+                  enum: [light, dark]
+                  default: light
+      responses:
+        '200':
+          description: HTML Code der Vorschau
+          content:
+            text/html:
+              schema:
+                type: string

@@ -10,6 +10,7 @@ import healthRouter from './routes/health.js';
 import zipRouter from './routes/zip.js';
 import templatesRouter from './routes/templates.js';
 import memoryRouter from './routes/memory.js';
+import canvaRouter from './routes/canva.js';
 
 // Import middleware
 import { errorHandler, notFoundHandler } from './middleware/errorHandler.js';
@@ -39,17 +40,15 @@ app.use('/health', healthRouter);
 app.use('/zip-bundles', zipRouter);
 app.use('/templates', templatesRouter);
 app.use('/memory', memoryRouter);
+app.use('/canva', canvaRouter);
 
-// Static file serving for local storage mode
-const LOCAL_STORAGE_PATH = process.env.LOCAL_STORAGE_PATH || './uploads';
-app.use('/files', express.static(LOCAL_STORAGE_PATH));
+// ... (lines 43-48)
 
-// API Info
 app.get('/', (_req: Request, res: Response) => {
     res.json({
         name: 'GPT Modular Backend',
-        version: '1.0.0',
-        description: 'Backend service for Custom GPT Actions - ZIP, Templates, Memory',
+        version: '1.2.0',
+        description: 'Backend service for Custom GPT Actions - ZIP, Templates, Memory, Canva Converter',
         endpoints: {
             health: 'GET /health',
             zipBundles: 'POST /zip-bundles',
@@ -57,6 +56,8 @@ app.get('/', (_req: Request, res: Response) => {
             templateRender: 'POST /templates/render',
             memoryUpsert: 'POST /memory/upsert',
             memoryQuery: 'POST /memory/query',
+            canvaConvert: 'POST /canva/convert',
+            canvaPreview: 'POST /canva/preview',
         },
         documentation: '/docs',
         privacy: 'https://dyai2025.github.io/GPT-Backend/privacy.html',
