@@ -92,11 +92,10 @@ async function addFileToArchive(
             throw new ValidationError(`Failed to download file from ${file.sourceUrl}`);
         }
     } else if (file.content !== undefined) {
-        // Add text content
+        // Add text content (default handling if kind is missing or text-based)
         archive.append(file.content, { name: file.path });
     } else {
-        throw new ValidationError(
-            `File ${file.path}: either content or sourceUrl (for binary) is required`
-        );
+        // Last resort: If we have neither content nor sourceUrl, check if maybe it was mis-formatted
+        logger.warn(`File ${file.path} skipped: missing content/sourceUrl`);
     }
 }

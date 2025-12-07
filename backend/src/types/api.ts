@@ -4,7 +4,7 @@
 
 // Health Check
 export interface HealthResponse {
-    status: 'ok' | 'error';
+    status: 'ok' | 'error' | 'degraded';
     uptimeSeconds: number;
     timestamp: string;
     services: {

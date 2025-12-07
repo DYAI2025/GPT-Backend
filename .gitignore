@@ -66,3 +66,7 @@ tmp/
 # package-lock.json
 # yarn.lock
 # pnpm-lock.yaml
+
+# Custom Skills (User added)
+skill_canva_assset_manager/
+skills/canva_asset_manager/

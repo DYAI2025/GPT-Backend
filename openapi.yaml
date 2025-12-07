@@ -1,0 +1,244 @@
+openapi: 3.1.0
+info:
+  title: GPT Modular Backend API
+  description: Backend service for Custom GPT Actions providing ZIP creation, Template rendering, Memory storage, and Canva Automation utils.
+  version: 1.2.0
+servers:
+  - url: https://SERVER_URL_PLACEHOLDER
+    description: Production Server (Replace with your Vercel URL)
+  - url: http://localhost:3000
+    description: Local Development Server
+
+paths:
+  /health:
+    get:
+      operationId: checkHealth
+      summary: Check API Health
+      description: Returns status of the API and connected services.
+      responses:
+        '200':
+          description: Server is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  uptimeSeconds:
+                    type: number
+
+  /test:
+    post:
+      operationId: testConnection
+      summary: Test Connectivity
+      description: Echoes back the received data to verify connectivity and JSON parsing.
+      requestBody:
+        description: Any JSON payload
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+              example: { "msg": "Hello World" }
+      responses:
+        '200':
+          description: Connectivity verified
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  receivedBody:
+                    type: object
+
+  /zip-bundles:
+    post:
+      operationId: createZipBundle
+      summary: Create and Download ZIP
+      description: Bundles multiple text files or binary assets into a single ZIP file for download.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - files
+              properties:
+                projectName:
+                  type: string
+                  description: Name of the ZIP file (without extension). Alias 'filename' is also supported.
+                  example: canva_export
+                files:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                      - path
+                    properties:
+                      path:
+                        type: string
+                        description: Relative path in the ZIP (e.g. "folder/file.txt")
+                      content:
+                        type: string
+                        description: Text content of the file
+                      sourceUrl:
+                        type: string
+                        description: Public URL to download binary content from (if content is empty)
+                      kind:
+                        type: string
+                        enum: [text, binary, code, markdown]
+                        default: text
+      responses:
+        '200':
+          description: ZIP file stream
+          content:
+            application/zip:
+              schema:
+                type: string
+                format: binary
+
+  /templates:
+    get:
+      operationId: listTemplates
+      summary: List Templates
+      description: Returns a list of available document templates.
+      responses:
+        '200':
+          description: List of templates
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    name:
+                      type: string
+                    description:
+                      type: string
+                    fields:
+                      type: array
+                      items:
+                        type: object
+
+  /templates/render:
+    post:
+      operationId: renderTemplate
+      summary: Render Document
+      description: Fills a specific template with data and returns HTML or PDF.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - templateId
+                - data
+              properties:
+                templateId:
+                  type: string
+                output:
+                  type: string
+                  enum: [html, pdf]
+                  default: html
+                data:
+                  type: object
+                  description: Key-value pairs matching the template fields
+      responses:
+        '200':
+          description: Render result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  downloadUrl:
+                    type: string
+                  output:
+                    type: string
+
+  /memory/upsert:
+    post:
+      operationId: storeMemory
+      summary: Store Data (Long-term Memory)
+      description: Persist arbitrary JSON data for a specific user/key combination.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - userId
+                - key
+                - value
+              properties:
+                userId:
+                  type: string
+                key:
+                  type: string
+                value:
+                  type: object
+      responses:
+        '200':
+          description: Success status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+
+  /memory/query:
+    post:
+      operationId: retrieveMemory
+      summary: Retrieve Data
+      description: Get stored data by key.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - userId
+                - key
+              properties:
+                userId:
+                  type: string
+                key:
+                  type: string
+      responses:
+        '200':
+          description: Stored value
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  value:
+                    type: object
+                    nullable: true
+
+components:
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            message:
+              type: string
+            code:
+              type: string
