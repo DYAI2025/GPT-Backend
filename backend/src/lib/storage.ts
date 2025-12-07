@@ -154,6 +154,11 @@ class StorageService {
     isLocalStorage(): boolean {
         return this.isLocal;
     }
+
+    // Expose the base path used for local storage so it can be served statically
+    getLocalBasePath(): string {
+        return path.resolve(LOCAL_STORAGE_PATH);
+    }
 }
 
 export const storage = new StorageService();

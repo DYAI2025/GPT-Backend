@@ -131,6 +131,7 @@ app.use('/canva', canvaRouter);
 // Adjust path relative to 'dist' or 'src' depending on run context
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { storage } from './lib/storage.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -138,6 +139,13 @@ const __dirname = path.dirname(__filename);
 const frontendPath = path.join(__dirname, '../../frontend');
 
 app.use(express.static(frontendPath));
+
+// Serve locally stored files (used when Supabase is not configured)
+if (storage.isLocalStorage()) {
+    const localPath = storage.getLocalBasePath();
+    app.use('/files', express.static(localPath));
+    logger.info('📂 Serving local storage files', { localPath });
+}
 
 // ... (lines 43-48)
 
