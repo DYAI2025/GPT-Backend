@@ -1,0 +1,17 @@
+{
+  "version": 2,
+  "installCommand": "cd backend && npm install",
+  "buildCommand": "cd backend && npm run build",
+  "builds": [
+    {
+      "src": "backend/src/index.ts",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/backend/src/index.ts"
+    }
+  ]
+}

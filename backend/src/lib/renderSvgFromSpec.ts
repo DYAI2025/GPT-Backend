@@ -1,5 +1,5 @@
 import { createSVGWindow } from 'svgdom';
-import { SVG, registerWindow } from '@svgdotjs/svg.js';
+import { SVG, registerWindow, type Svg } from '@svgdotjs/svg.js';
 
 export async function renderSvgFromSpec(spec: any): Promise<string> {
     // 1. Create a virtual DOM window
@@ -12,7 +12,8 @@ export async function renderSvgFromSpec(spec: any): Promise<string> {
     // 3. Create Canvas
     const width = 1080;
     const height = 1080;
-    const canvas = SVG(document.documentElement).size(width, height);
+    const canvas = SVG(document.documentElement as unknown as HTMLElement) as unknown as Svg;
+    canvas.size(width, height);
 
     // Background
     const bg = spec.metadata?.brand_colors?.[2] || "#FFFFFF";
