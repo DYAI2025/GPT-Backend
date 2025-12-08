@@ -5,6 +5,12 @@ import dotenv from 'dotenv';
 // Load environment variables
 dotenv.config();
 
+// Vercel Speed Insights - inject at app startup
+import { injectSpeedInsights } from '@vercel/speed-insights';
+if (process.env.VERCEL === '1') {
+    injectSpeedInsights();
+}
+
 // Import routes
 import healthRouter from './routes/health.js';
 import zipRouter from './routes/zip.js';
