@@ -66,6 +66,14 @@ Basis URL (Produktion): `https://backend-dyai2025s-projects.vercel.app`
 *   Vercel CLI (`npm i -g vercel`)
 *   Supabase Account (optional für Memory)
 
+### Laufzeit- & Build-Befehle (virtueller Server)
+*   **Arbeitsverzeichnis:** immer `backend/`
+*   **Entwicklung starten:** `npm run dev` (nodemon/tsx Watcher, Port 3000)
+*   **Build erstellen:** `npm run build` (legt `backend/dist/index.js` an)
+*   **Produktionsstart lokal:** `npm start` (setzt einen fertigen Build voraus)
+*   **Vercel Build Hooks:** Die Root-`vercel.json` führt automatisch `cd backend && npm install` und `cd backend && npm run build` aus und deployed anschließend `backend/dist/index.js`.
+    *  Wenn kein Bild/Asset ausgeliefert wird, überprüfe zuerst, ob der Build wirklich `backend/dist` erzeugt hat und ob die Deployment-Logs keinen Fehler beim Install/Build zeigen.
+
 ### 1. Projekt klonen & installieren
 ```bash
 git clone https://github.com/DYAI2025/GPT-Backend.git
