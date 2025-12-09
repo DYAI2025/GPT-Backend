@@ -4,14 +4,22 @@
   "buildCommand": "cd backend && npm run build",
   "builds": [
     {
-      "src": "backend/src/index.ts",
+      "src": "backend/dist/index.js",
       "use": "@vercel/node"
     }
   ],
   "routes": [
     {
+      "src": "/health",
+      "dest": "/backend/dist/index.js"
+    },
+    {
+      "src": "/zip-bundles",
+      "dest": "/backend/dist/index.js"
+    },
+    {
       "src": "/(.*)",
-      "dest": "/backend/src/index.ts"
+      "dest": "/backend/dist/index.js"
     }
   ]
 }
