@@ -2,14 +2,22 @@
     "version": 2,
     "builds": [
         {
-            "src": "src/index.ts",
+            "src": "dist/index.js",
             "use": "@vercel/node"
         }
     ],
     "routes": [
         {
+            "src": "/health",
+            "dest": "dist/index.js"
+        },
+        {
+            "src": "/zip-bundles",
+            "dest": "dist/index.js"
+        },
+        {
             "src": "/(.*)",
-            "dest": "/src/index.ts"
+            "dest": "dist/index.js"
         }
     ]
 }

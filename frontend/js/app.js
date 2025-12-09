@@ -81,7 +81,16 @@ async function testConnection() {
 
     try {
         const response = await fetch(`${config.backendUrl}/health`);
-        const data = await response.json();
+        let data;
+        
+        const contentType = response.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
+            data = await response.json();
+        } else {
+            // If not JSON, try to get text response
+            const text = await response.text();
+            data = { status: 'error', message: `Non-JSON response: ${text}` };
+        }
 
         if (data.status === 'ok') {
             statusBadge.className = 'status-badge connected';
@@ -130,7 +139,16 @@ async function loadTemplates() {
 
     try {
         const response = await fetch(`${config.backendUrl}/templates`);
-        const templates = await response.json();
+        let templates;
+        
+        const contentType = response.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
+            templates = await response.json();
+        } else {
+            // If not JSON, try to get text response
+            const text = await response.text();
+            templates = [{ name: 'Error', type: 'error', description: `Non-JSON response: ${text}` }];
+        }
 
         grid.innerHTML = templates.map(template => `
       <div class="template-card">
@@ -194,7 +212,30 @@ async function testZipBundle() {
             body: JSON.stringify({ projectName, files })
         });
 
-        const data = await response.json();
+        let data;
+        const contentType = response.headers.get('content-type');
+        
+        if (contentType && contentType.includes('application/json')) {
+            data = await response.json();
+        } else {
+            // The ZIP endpoint returns application/zip, so this shouldn't normally happen
+            // But if there's an error, it might return JSON
+            if (response.status >= 400) {
+                // Try to parse error response as JSON
+                try {
+                    data = await response.json();
+                } catch {
+                    // If that fails, get response as text
+                    const text = await response.text();
+                    data = { error: 'Non-JSON error response', details: text };
+                }
+            } else {
+                // For successful response with non-JSON content
+                const blob = await response.blob();
+                data = { message: `ZIP response received, size: ${blob.size} bytes` };
+            }
+        }
+
         output.textContent = JSON.stringify(data, null, 2);
 
         if (data.downloadUrl) {
@@ -222,7 +263,33 @@ async function testTemplateRender() {
             body: JSON.stringify({ templateId, data, output: outputFormat })
         });
 
-        const result = await response.json();
+        let result;
+        const contentType = response.headers.get('content-type');
+        
+        if (contentType && contentType.includes('application/json')) {
+            result = await response.json();
+        } else {
+            // If not JSON response (e.g., PDF, HTML), handle accordingly
+            if (response.status >= 400) {
+                // Try to parse error response as JSON
+                try {
+                    result = await response.json();
+                } catch {
+                    // If that fails, get response as text
+                    const text = await response.text();
+                    result = { error: 'Non-JSON error response', details: text };
+                }
+            } else {
+                // For successful response with non-JSON content (PDF, HTML)
+                const contentLength = response.headers.get('content-length');
+                result = { 
+                    message: 'Template rendered successfully', 
+                    contentType: contentType,
+                    size: contentLength ? `${contentLength} bytes` : 'unknown size' 
+                };
+            }
+        }
+
         output.textContent = JSON.stringify(result, null, 2);
 
         if (result.downloadUrl) {
@@ -250,7 +317,21 @@ async function testMemoryUpsert() {
             body: JSON.stringify({ userId, key, value })
         });
 
-        const data = await response.json();
+        let data;
+        const contentType = response.headers.get('content-type');
+        
+        if (contentType && contentType.includes('application/json')) {
+            data = await response.json();
+        } else {
+            // If not JSON response, handle as text
+            const text = await response.text();
+            if (response.ok) {
+                data = { message: 'Operation successful', response: text };
+            } else {
+                data = { error: 'Non-JSON error response', details: text };
+            }
+        }
+
         output.textContent = JSON.stringify(data, null, 2);
         showToast('Memory saved successfully!', 'success');
     } catch (error) {
@@ -273,7 +354,21 @@ async function testMemoryQuery() {
             body: JSON.stringify({ userId, key })
         });
 
-        const data = await response.json();
+        let data;
+        const contentType = response.headers.get('content-type');
+        
+        if (contentType && contentType.includes('application/json')) {
+            data = await response.json();
+        } else {
+            // If not JSON response, handle as text
+            const text = await response.text();
+            if (response.ok) {
+                data = { message: 'Operation successful', response: text };
+            } else {
+                data = { error: 'Non-JSON error response', details: text };
+            }
+        }
+
         output.textContent = JSON.stringify(data, null, 2);
 
         if (data.value) {

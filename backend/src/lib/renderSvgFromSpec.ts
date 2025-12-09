@@ -12,7 +12,7 @@ export async function renderSvgFromSpec(spec: any): Promise<string> {
     // 3. Create Canvas
     const width = 1080;
     const height = 1080;
-    const canvas = SVG(document.documentElement as unknown as HTMLElement) as unknown as Svg;
+    const canvas = SVG(document.documentElement) as any;
     canvas.size(width, height);
 
     // Background
