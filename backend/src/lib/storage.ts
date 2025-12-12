@@ -27,8 +27,22 @@ function ensureLocalDirs() {
 class StorageService {
     private isLocal: boolean;
     private baseUrl: string;
+    private hasSupabaseConfig: boolean;
+    private runningOnVercel: boolean;
 
     constructor() {
+        this.hasSupabaseConfig = !!(process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_KEY);
+        this.runningOnVercel = process.env.VERCEL === '1';
+
+        if (this.runningOnVercel && !this.hasSupabaseConfig) {
+            this.isLocal = false;
+            this.baseUrl = process.env.BASE_URL || '';
+            console.warn(
+                'StorageService: Running on Vercel without Supabase configuration. Uploads will not work.'
+            );
+            return;
+        }
+
         this.isLocal = USE_LOCAL_STORAGE;
         this.baseUrl = process.env.BASE_URL || `http://localhost:${process.env.PORT || 3000}`;
         if (this.isLocal) {
@@ -49,6 +63,10 @@ class StorageService {
                 publicUrl: `${this.baseUrl}/files/zips/${filename}`,
                 path: filePath,
             };
+        }
+
+        if (!this.hasSupabaseConfig) {
+            throw new Error('Storage is not configured for production (Supabase missing).');
         }
 
         const { error } = await supabase.getClient()
@@ -86,6 +104,10 @@ class StorageService {
             };
         }
 
+        if (!this.hasSupabaseConfig) {
+            throw new Error('Storage is not configured for production (Supabase missing).');
+        }
+
         const contentType = extension === 'pdf' ? 'application/pdf' : 'text/html';
         const { error } = await supabase.getClient()
             .storage
@@ -107,6 +129,9 @@ class StorageService {
 
     // Get public URL for Supabase storage
     getPublicUrl(bucket: string, filepath: string): string {
+        if (!this.hasSupabaseConfig) {
+            throw new Error('Supabase storage is not configured.');
+        }
         const supabaseUrl = process.env.SUPABASE_URL;
         return `${supabaseUrl}/storage/v1/object/public/${bucket}/${filepath}`;
     }
@@ -137,6 +162,10 @@ class StorageService {
     async checkHealth(): Promise<boolean> {
         if (this.isLocal) {
             return fs.existsSync(LOCAL_STORAGE_PATH);
+        }
+
+        if (!this.hasSupabaseConfig) {
+            return false;
         }
 
         try {
