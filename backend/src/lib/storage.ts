@@ -132,8 +132,15 @@ class StorageService {
         if (!this.hasSupabaseConfig) {
             throw new Error('Supabase storage is not configured.');
         }
+
         const supabaseUrl = process.env.SUPABASE_URL;
-        return `${supabaseUrl}/storage/v1/object/public/${bucket}/${filepath}`;
+        const encodedBucket = encodeURIComponent(bucket);
+        const encodedFilepath = filepath
+            .split('/')
+            .map(encodeURIComponent)
+            .join('/');
+
+        return `${supabaseUrl}/storage/v1/object/public/${encodedBucket}/${encodedFilepath}`;
     }
 
     // Get signed URL (for private buckets)
